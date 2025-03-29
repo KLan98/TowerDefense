@@ -3,16 +3,29 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
-    int currentHp = 100;
-    int maxHp = 100;
-    bool isDead = true;
-    bool isBoss = true;
+    //int currentHp = 100;
+    //int maxHp = 100;
+    //bool isDead = true;
+    //bool isBoss = true;
     float weight = 2.5f;
     string enemyName;
-    float minWeight = 1f;
-    float maxWeight = 10f;
+    float rangeMinWeight = 1f;
+    float rangeMaxWeight = 10f;
+
+    public abstract string GetName();
+
+    private void OnEnable()
+    {
+        this.InitData();
+    }
+
+    //private void Reset()
+    //{
+    //    Debug.Log("Reset");
+    //    this.InitData();
+    //}
 
     protected virtual void InitData()
     {
@@ -21,28 +34,23 @@ public class Enemy : MonoBehaviour
 
     protected virtual float GetRandomWeight()
     {
-        return Random.Range(this.minWeight, this.maxWeight);
+        return Random.Range(this.rangeMinWeight, this.rangeMaxWeight);
     }
 
-    float GetWeight()
+    public float GetWeight()
     {
         return this.weight;
     }
 
-    public virtual string GetName()
-    {
-        return this.enemyName;
-    }
+    //public void Moving()
+    //{
+    //    string message = this.GetName() + " " + "Moving";
+    //    Debug.Log(message);
+    //}
 
-    public void Moving()
-    {
-        string message = this.GetName() + " " + "Moving";
-        Debug.Log(message);
-    }
-
-    public void HP()
-    {
-        string message = this.GetName() + " " + "-1HP";
-        Debug.Log(message);
-    }
+    //public void HP()
+    //{
+    //    string message = this.GetName() + " " + "-1HP";
+    //    Debug.Log(message);
+    //}
 }

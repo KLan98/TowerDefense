@@ -6,6 +6,10 @@ public class EnemyManager : MonoBehaviour
 {
     private Wolf wolfComponent; // Store reference to Wolf
     private Ghost ghostComponent;
+    private Zombie zombieComponent;
+
+    private Enemy minWeightEnemy;
+    private Enemy maxWeightEnemy;  
 
     List<Enemy> enemies = new List<Enemy>(); // create list named enemies
 
@@ -14,20 +18,52 @@ public class EnemyManager : MonoBehaviour
         this.LoadEnemies();
     }
 
-    private void FixedUpdate()
+    private void Start()
     {
-        this.TestMethod();
+        this.LoadMinWeightEnemy();
+        this.LoadMaxWeightEnemy();  
     }
 
-    void TestMethod()
-    {
-        wolfComponent.Moving();
-        wolfComponent.HP();
+    //private void FixedUpdate()
+    //{
+    //    this.TestMethod();
+    //}
 
-        ghostComponent.HP();
+    //void TestMethod()
+    //{
+    //    wolfComponent.Moving();
+    //    wolfComponent.HP();
+
+    //    ghostComponent.HP();
+    //}
+
+    private void LoadMinWeightEnemy()
+    {
+        this.minWeightEnemy = enemies[0];
+        foreach (Enemy enemy in this.enemies)
+        {
+            if (enemy.GetWeight() < this.minWeightEnemy.GetWeight())
+            {
+                this.minWeightEnemy = enemy;    
+            }
+        }
+        Debug.Log("Min Weight Enemy" + " " + this.minWeightEnemy);
     }
 
-    protected virtual void LoadEnemies()
+    private void LoadMaxWeightEnemy()
+    {
+        this.maxWeightEnemy = enemies[0];
+        foreach (Enemy enemy in this.enemies)
+        {
+            if (enemy.GetWeight() > this.minWeightEnemy.GetWeight())
+            {
+                this.maxWeightEnemy = enemy;
+            }
+        }
+        Debug.Log("Max Weight Enemy" + " " + this.maxWeightEnemy);
+    }
+
+    protected void LoadEnemies()
     {
         // Find the parent GameObject by name
         GameObject enemyManager = GameObject.Find("EnemyManager");
@@ -41,11 +77,16 @@ public class EnemyManager : MonoBehaviour
         ghostComponent = ghost.AddComponent<Ghost>();
         ghost.transform.SetParent(enemyManager.transform);
 
-        foreach (Transform child in transform)
+        GameObject zombie = new GameObject("Zombie");
+        zombieComponent = zombie.AddComponent<Zombie>();
+        zombie.transform.SetParent(enemyManager.transform);
+
+        foreach (Transform child in enemyManager.transform)
         {
             Enemy enemy = child.GetComponent<Enemy>(); // if enemy is the  subclass of Enemy
             if (enemy == null) continue; // if the enemy is not a subclass of enemy, then skip the next lines 
             this.enemies.Add(enemy); // add enemy into enemies list
+            Debug.Log(enemy.GetName() + " " + enemy.GetWeight());
         }
     }
 }

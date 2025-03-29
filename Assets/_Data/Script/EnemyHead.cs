@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class EnemyHead 
 {
-    int currentHp = 20;
-    int maxHp = 20; 
+//    int currentHp = 20;
+//    int maxHp = 20; 
 }
