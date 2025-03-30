@@ -10,7 +10,7 @@ public abstract class Enemy : MonoBehaviour
     //bool isDead = true;
     //bool isBoss = true;
     float weight = 2.5f;
-    string enemyName;
+    //string enemyName;
     float rangeMinWeight = 1f;
     float rangeMaxWeight = 10f;
 

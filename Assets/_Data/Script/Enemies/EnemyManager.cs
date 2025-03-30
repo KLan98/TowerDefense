@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -9,9 +10,13 @@ public class EnemyManager : MonoBehaviour
     private Zombie zombieComponent;
 
     private Enemy minWeightEnemy;
-    private Enemy maxWeightEnemy;  
+    private Enemy maxWeightEnemy;
 
-    List<Enemy> enemies = new List<Enemy>(); // create list named enemies
+    float minWeight;
+    float maxWeight;    
+
+    private List<Enemy> enemies = new List<Enemy>(); // create list named enemies
+    public ReadOnlyCollection<Enemy> Enemies => enemies.AsReadOnly(); // expose the list as read only 
 
     private void Awake()
     {
@@ -47,7 +52,9 @@ public class EnemyManager : MonoBehaviour
                 this.minWeightEnemy = enemy;    
             }
         }
+        this.minWeight = this.minWeightEnemy.GetWeight();
         Debug.Log("Min Weight Enemy" + " " + this.minWeightEnemy);
+        Debug.Log("Min Weight =" + " " + minWeight);
     }
 
     private void LoadMaxWeightEnemy()
@@ -55,12 +62,14 @@ public class EnemyManager : MonoBehaviour
         this.maxWeightEnemy = enemies[0];
         foreach (Enemy enemy in this.enemies)
         {
-            if (enemy.GetWeight() > this.minWeightEnemy.GetWeight())
+            if (enemy.GetWeight() > this.maxWeightEnemy.GetWeight())
             {
                 this.maxWeightEnemy = enemy;
             }
         }
+        this.maxWeight = this.maxWeightEnemy.GetWeight();
         Debug.Log("Max Weight Enemy" + " " + this.maxWeightEnemy);
+        Debug.Log("Max Weight =" + " " + maxWeight);
     }
 
     protected void LoadEnemies()
