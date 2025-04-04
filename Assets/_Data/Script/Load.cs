@@ -17,6 +17,5 @@ public class Load : MonoBehaviour
 
     protected virtual void LoadComponent()
     {
-
     }
 }

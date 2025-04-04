@@ -20,4 +20,9 @@ public class PathManager : Load
             this.paths.Add(path);
         }
     }
+
+    public virtual Path GetPaths(int pathIndex)
+    {
+        return this.paths[pathIndex];
+    }
 }

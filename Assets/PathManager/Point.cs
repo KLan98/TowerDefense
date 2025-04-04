@@ -5,35 +5,23 @@ using UnityEngine;
 
 public class Point : Load
 {
-    [SerializeField] GameObject nextPoint;
-    [SerializeField] GameObject currentPoint;
-    [SerializeField] List<GameObject> pointsList = new List<GameObject>();
+    [SerializeField] Transform nextPoint;
+    [SerializeField] Transform parentTransform;
 
     protected override void LoadComponent()
     {
-        this.LoadPointsList();
-        this.LoadCurrentAndNextPoints();
+        this.LoadNextPoint();
     }
 
-    protected virtual void LoadPointsList()
+    protected virtual void LoadNextPoint()
     {
-        // copy all siblings into a list
-        GameObject path = transform.parent.gameObject;
-        foreach (Transform sibling in path.transform)
-        {
-            pointsList.Add(sibling.gameObject);
-        }
-    }
+        // find parent of this 
+        this.parentTransform = gameObject.transform.parent;
+        int siblingIndex = gameObject.transform.GetSiblingIndex();
 
-    protected virtual void LoadCurrentAndNextPoints()
-    {
-        foreach (GameObject points in pointsList)
+        if (siblingIndex + 1 < this.parentTransform.childCount)
         {
-            if (transform.name == points.name)
-            {
-                this.currentPoint = points;
-            }
-            this.nextPoint = pointsList[pointsList.IndexOf(currentPoint) + 1];
+             this.nextPoint = this.parentTransform.GetChild(siblingIndex + 1);
         }
 
     }
