@@ -13,9 +13,16 @@ public class Load : MonoBehaviour
     protected virtual void Reset()
     {
         this.LoadComponent();
+        this.ResetValue();  
     }
 
     protected virtual void LoadComponent()
     {
+
+    }
+
+    protected virtual void ResetValue()
+    {
+        // reset some value
     }
 }
