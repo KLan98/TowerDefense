@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class Path : Load
 {
-    [SerializeField] private List<Point> points = new();
-    public ReadOnlyCollection<Point> Points => points.AsReadOnly(); // expose the list as read only 
-
+    [SerializeField] protected List<Point> points;
+    public List<Point> Points => points;
 
     protected override void LoadComponent()
     {
@@ -22,5 +21,10 @@ public class Path : Load
             Point point = child.GetComponent<Point>();
             this.points.Add(point);
         }
+    }
+
+    public virtual Point GetPoint(int index)
+    {
+        return this.points[index];
     }
 }

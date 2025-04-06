@@ -5,24 +5,23 @@ using UnityEngine;
 
 public class Point : Load
 {
-    [SerializeField] Transform nextPoint;
-    [SerializeField] Transform parentTransform;
+    [SerializeField] protected Point nextPoint;
+    public Point NextPoint => nextPoint;
 
     protected override void LoadComponent()
     {
-        this.LoadNextPoint();
+        this.InitNextPoints();
     }
 
-    protected virtual void LoadNextPoint()
+    protected virtual void InitNextPoints()
     {
-        // find parent of this 
-        this.parentTransform = gameObject.transform.parent;
-        int siblingIndex = gameObject.transform.GetSiblingIndex();
+        // find parent of this object
+        int siblingIndex = transform.GetSiblingIndex();
 
-        if (siblingIndex + 1 < this.parentTransform.childCount)
+        if (siblingIndex + 1 < this.transform.parent.childCount)
         {
-             this.nextPoint = this.parentTransform.GetChild(siblingIndex + 1);
+            Transform nextSibling = transform.parent.GetChild(siblingIndex + 1);
+            this.nextPoint = nextSibling.GetComponent<Point>();    
         }
-
     }
 }
