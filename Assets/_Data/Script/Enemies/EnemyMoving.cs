@@ -90,6 +90,7 @@ public class EnemyMoving : Load
         {
             Debug.Log("Final point" + " " + this.currentPoint.transform.name + " " + "reached");
             this.isFinalPoint = true;
+            this.canMove = false;
         }
     }
 
