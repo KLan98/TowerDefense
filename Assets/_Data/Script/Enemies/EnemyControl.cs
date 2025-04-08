@@ -37,7 +37,7 @@ public class EnemyControl : Load
     protected virtual void LoadModel()
     {
         if (this.model != null) return;
-        this.model = transform.Find("Model");
+        this.model = transform.Find(Const.MODEL);
         this.model.localPosition = new Vector3(0f, 0f, 0f);
     }
 }

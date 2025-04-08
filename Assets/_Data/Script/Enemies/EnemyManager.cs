@@ -3,8 +3,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
-public class EnemyManager : MonoBehaviour
+public class EnemyManager : Load
 {
-    private List<Enemy> enemies = new List<Enemy>(); // create list named enemies
-    public ReadOnlyCollection<Enemy> Enemies => enemies.AsReadOnly(); // expose the list as read only 
+    [SerializeField] protected List<EnemyControl> enemies;
+    public List<EnemyControl> Enemies => enemies;
+
+    protected override void LoadComponent()
+    {
+        this.LoadEnemyList();
+    }
+
+    protected virtual void LoadEnemyList()
+    {
+        GameObject enemyManager = GameObject.Find(Const.ENEMY_MANAGER);
+
+        foreach (Transform child in enemyManager.transform)
+        {
+            EnemyControl enemy = child.GetComponent<EnemyControl>();
+            this.enemies.Add(enemy);
+        }
+    }
+
 }

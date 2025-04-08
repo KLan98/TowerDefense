@@ -39,13 +39,13 @@ public class EnemyMoving : Load
 
     protected virtual void LoadComponentEnemyControl()
     {
-        if (enemyControl != null) return;
-        enemyControl = transform.parent.GetComponent<EnemyControl>();
+        if (this.enemyControl != null) return;
+        this.enemyControl = transform.parent.GetComponent<EnemyControl>();
     }
 
     protected virtual void LoadComponentPathManager()
     {
-        GameObject pathManagerObject = GameObject.Find("PathManager");
+        GameObject pathManagerObject = GameObject.Find(Const.PATH_MANAGER);
         if (this.pathManager != null) return;
         this.pathManager = pathManagerObject.GetComponent<PathManager>();
     }
@@ -62,7 +62,7 @@ public class EnemyMoving : Load
         this.FindNextPoint();
 
         this.enemyControl.Agent.SetDestination(this.currentPoint.transform.position);
-        Debug.Log(this.transform.parent.name + " " + "is moving to" + " " + this.currentPoint.transform.name + " " + "of" + " " + this.currentPoint.transform.parent.name);
+        //Debug.Log(this.transform.parent.name + " " + "is moving to" + " " + this.currentPoint.transform.name + " " + "of" + " " + this.currentPoint.transform.parent.name);
     }
 
     protected virtual void FindNextPoint()
@@ -81,14 +81,14 @@ public class EnemyMoving : Load
         // if the Euclidean distance < stop distance then point_x has been reached AND only assign next point if current point different from final point
         if (this.pointDistance < this.stopDistance && this.currentPoint != this.finalPoint)
         {
-            Debug.Log(this.currentPoint.transform.name + " " + "reached");
+            //Debug.Log(this.currentPoint.transform.name + " " + "reached");
             this.currentPoint = this.currentPoint.NextPoint;
         }
 
         // final point reached
         else if (this.pointDistance < this.stopDistance && this.currentPoint == this.finalPoint)
         {
-            Debug.Log("Final point" + " " + this.currentPoint.transform.name + " " + "reached");
+            //Debug.Log("Final point" + " " + this.currentPoint.transform.name + " " + "reached");
             this.isFinalPoint = true;
             this.canMove = false;
         }
@@ -123,6 +123,6 @@ public class EnemyMoving : Load
         }
 
         // set parameter to value of isMoving in animator
-        this.enemyControl.Animator.SetBool("isMoving", this.isMoving);
+        this.enemyControl.Animator.SetBool(Const.IS_MOVING, this.isMoving);
     }
 }
