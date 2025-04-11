@@ -11,7 +11,10 @@ public class TowerEnemyTargetting : Load
     [SerializeField] protected Rigidbody rb;
     [SerializeField] protected SphereCollider sphereCollider;
     [SerializeField] protected EnemyControl nearestEnemy;
+    public EnemyControl NearestEnemy => nearestEnemy;
+
     [SerializeField] protected List<EnemyControl> inRangeEnemies; // enemies in the radius of sphere collider
+    public List<EnemyControl> InRangeEnemies => inRangeEnemies;
 
     protected virtual void FixedUpdate()
     {
@@ -77,7 +80,7 @@ public class TowerEnemyTargetting : Load
     //    this.enemyManager = enemyManagerObject.GetComponent<EnemyManager>();
     //}
 
-    protected virtual void FindNearestEnemy()
+    public virtual void FindNearestEnemy()
     {
         // local variable shouldn't use as [SerializeField] & global variable
         float distanceToEnemy;

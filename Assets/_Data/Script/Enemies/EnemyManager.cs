@@ -10,7 +10,7 @@ public class EnemyManager : Load
 
     protected override void LoadComponent()
     {
-        this.LoadEnemyList();
+        //this.LoadEnemyList();
     }
 
     protected virtual void LoadEnemyList()

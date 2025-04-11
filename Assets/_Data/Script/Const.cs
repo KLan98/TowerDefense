@@ -8,4 +8,6 @@ public class Const
     public const string TURRET_ROTATOR = "Rotator";
     public const string TURRET_MODEL = "TurretModel";
     public const string TURRET_PIVOT = "TurretPivot";
+    public const string BULLET_SPAWNER = "BulletSpawner";
+    public const string TURRET_BULLET = "TurretPivot";
 }

@@ -8,25 +8,30 @@ using static UnityEngine.GraphicsBuffer;
 public class TowerShooting : TowerAbstract
 {
     // enemy control component of the target
-    [SerializeField] protected EnemyControl targetEnemyControl;
-    [SerializeField] public float rotationSpeed = 1;
+    [SerializeField] protected EnemyControl nearestEnemyControl;
+    [SerializeField] public float rotationSpeed = 100f;
+    [SerializeField] public float fireRate = 0.7f;
+    [SerializeField] protected bool isFiring = false;
+    [SerializeField] protected bool canFire = false;
 
-    protected virtual void FixedUpdate()
+    void Update()
     {
-        this.LookAtTarget();
+        this.LoadNearestEnemyControl();
+        this.CheckFiring();
     }
 
     protected virtual void LookAtTarget()
     {
-        if (targetEnemyControl == null) return;
+        // if no enemy inrange then do nothing
+        if (towerEnemyTargetting.InRangeEnemies.Count == 0) return;
 
         // Calculate the relative distance from the turret to the target
-        Vector3 direction = targetEnemyControl.transform.position - towerControl.Rotator.transform.position;
+        Vector3 direction = nearestEnemyControl.GetComponentInChildren<EnemyAimingPoint>().transform.position - towerControl.Rotator.transform.position;
 
         // We only want to rotate left/right, so we ignore the Y (vertical) difference.
         // This ensures the turret doesn't tilt up or down — only turns on the horizontal plane.
         direction.y = 0f;
-        Debug.Log(direction);
+        //Debug.Log(direction);
 
         // If the direction becomes zero (target is directly above or same position), skip to avoid errors
         if (direction == Vector3.zero) return; // Prevent NaNs
@@ -47,15 +52,87 @@ public class TowerShooting : TowerAbstract
         );
     }
 
+    protected virtual void FireAtTarget()
+    {
+        // if turrent cannot fire then stop firing
+        //if (this.canFire == false)
+        //{
+        //    this.towerControl.BulletSpawner.StopFiring();
+        //    return;
+        //}
+        // target = nearest enemy
+        this.nearestEnemyControl = towerEnemyTargetting.NearestEnemy;
+
+        // spawn bullets
+        //this.towerControl.BulletSpawner.Spawn(this.towerControl.TowerBullet);
+        this.towerControl.BulletSpawner.StartFiring(towerBullet, fireRate);
+
+        // some later implementation so that bullets fly
+    }
+
     void OnDrawGizmos()
     {
-        if (targetEnemyControl != null && towerControl?.Rotator != null)
+        if (nearestEnemyControl != null && towerControl?.Rotator != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(
                 towerControl.Rotator.position,
-                targetEnemyControl.GetComponentInChildren<EnemyAimingPoint>().transform.position
+                nearestEnemyControl.GetComponentInChildren<EnemyAimingPoint>().transform.position
             );
+        }
+    }
+
+    protected virtual void LoadNearestEnemyControl()
+    {
+        if (towerEnemyTargetting.InRangeEnemies.Count > 0)
+        {
+            this.nearestEnemyControl = towerEnemyTargetting.NearestEnemy;
+        }
+
+        else
+        {
+            this.nearestEnemyControl = null;
+            //Debug.Log(this.nearestEnemyControl);
+        }
+    }
+
+    protected virtual void CheckFiring()
+    {
+        // Check if we have any enemies in range AND we've already selected a target
+        if (towerEnemyTargetting.InRangeEnemies.Count > 0 && this.nearestEnemyControl != null)
+        {
+            // Rotate the tower to face the current target
+            LookAtTarget();
+
+            if (this.canFire == true)
+            {
+                FireAtTarget(); // Starts firing bullets (spawns coroutine)
+                this.isFiring = true; // Mark that we're now firing so we don't start again
+            }
+
+            else if (this.canFire == false) 
+            {
+                towerControl.BulletSpawner.StopFiring();
+                this.isFiring = false;
+            }
+        }
+
+        else if (towerControl.BulletSpawner.firingCoroutine == null)
+        {
+            this.isFiring = false;
+            //Debug.Log("Set isFiring = false, reason: Firing coroutine stopped");
+        }
+
+        else if (towerEnemyTargetting.InRangeEnemies.Count == 0)
+        {
+            this.isFiring = false;
+            //Debug.Log("Set isFiring = false, reason: In range enemies = " + towerEnemyTargetting.InRangeEnemies.Count);
+        }
+
+        else if (this.nearestEnemyControl == null)
+        {
+            this.isFiring = false;
+            //Debug.Log("Set isFiring = false, reason: Target enemy control = null");
         }
     }
 }

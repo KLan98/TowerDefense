@@ -13,17 +13,17 @@ public class EnemyMoving : Load
     [SerializeField] protected Point currentPoint;
     [SerializeField] protected Point finalPoint;
     [SerializeField] protected float pointDistance = Mathf.Infinity; // distance between two points assign as max value (infinity)
-    [SerializeField] protected float stopDistance = 1f; // when this distance reached find next point
+    [SerializeField] protected float stopDistance = 2f; // when this distance reached find next point
     [SerializeField] protected bool isFinalPoint = false; // check if final point is reached
     [SerializeField] protected bool isMoving = false;
-    [SerializeField] protected bool canMove = false;
+    [SerializeField] protected bool canMove = true;
 
-    void FixedUpdate()
+    void Update()
     {
         this.Moving();
         this.CheckMoving();
     }
-
+    
     protected void Start()
     {
         this.LoadEnemyPath(); // always called before FinalPoint
@@ -53,8 +53,9 @@ public class EnemyMoving : Load
     protected virtual void Moving()
     {
         // if agent cannot move then agent isStopped
-        if (!this.canMove)
+        if (this.canMove == false)
         {
+            //Debug.Log("Agent cannot move, set isStopped = true");
             this.enemyControl.Agent.isStopped = true;
             return;
         }
@@ -77,6 +78,7 @@ public class EnemyMoving : Load
 
         // calculate Euclidean distance between enemy position and currentPoint
         this.pointDistance = Vector3.Distance(transform.position, this.currentPoint.transform.position);
+        // Debug.Log(pointDistance);
 
         // if the Euclidean distance < stop distance then point_x has been reached AND only assign next point if current point different from final point
         if (this.pointDistance < this.stopDistance && this.currentPoint != this.finalPoint)
@@ -91,6 +93,13 @@ public class EnemyMoving : Load
             //Debug.Log("Final point" + " " + this.currentPoint.transform.name + " " + "reached");
             this.isFinalPoint = true;
             this.canMove = false;
+        }
+
+        else if (this.pointDistance >= this.stopDistance && this.currentPoint != this.finalPoint)
+        {
+            //Debug.Log("Final point" + " " + this.finalPoint.transform.name + " " + "not reached keep moving to" + " " + this.currentPoint.transform.name);
+            this.isFinalPoint = false;
+            this.canMove = true;
         }
     }
 
@@ -112,14 +121,17 @@ public class EnemyMoving : Load
     // use navmesh to check if the agent is moving
     protected virtual void CheckMoving()
     {
+        //Debug.Log("Velocity: "+ this.enemyControl.Agent.velocity.magnitude);
         if (this.enemyControl.Agent.velocity.magnitude > 0)
         {
             this.isMoving = true;
+            //Debug.Log(isMoving);
         }
 
-        else
+        else if (this.enemyControl.Agent.velocity.magnitude == 0)
         {
             this.isMoving = false;
+            //Debug.Log(isMoving);
         }
 
         // set parameter to value of isMoving in animator
