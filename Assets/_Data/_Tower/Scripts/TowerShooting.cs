@@ -9,8 +9,8 @@ public class TowerShooting : TowerAbstract
 {
     // enemy control component of the target
     [SerializeField] protected EnemyControl nearestEnemyControl;
-    [SerializeField] public float rotationSpeed = 100f;
-    [SerializeField] public float fireRate = 0.7f;
+    [SerializeField] public float rotationSpeed = 3f;
+    [SerializeField] public float fireRate = 0.3f;
     [SerializeField] protected bool isFiring = false;
     [SerializeField] protected bool canFire = false;
 
@@ -54,20 +54,10 @@ public class TowerShooting : TowerAbstract
 
     protected virtual void FireAtTarget()
     {
-        // if turrent cannot fire then stop firing
-        //if (this.canFire == false)
-        //{
-        //    this.towerControl.BulletSpawner.StopFiring();
-        //    return;
-        //}
-        // target = nearest enemy
         this.nearestEnemyControl = towerEnemyTargetting.NearestEnemy;
 
-        // spawn bullets
-        //this.towerControl.BulletSpawner.Spawn(this.towerControl.TowerBullet);
+        // spawn bullets and fire
         this.towerControl.BulletSpawner.StartFiring(towerBullet, fireRate);
-
-        // some later implementation so that bullets fly
     }
 
     void OnDrawGizmos()
@@ -110,7 +100,7 @@ public class TowerShooting : TowerAbstract
                 this.isFiring = true; // Mark that we're now firing so we don't start again
             }
 
-            else if (this.canFire == false) 
+            else if (this.canFire == false)
             {
                 towerControl.BulletSpawner.StopFiring();
                 this.isFiring = false;
@@ -119,18 +109,21 @@ public class TowerShooting : TowerAbstract
 
         else if (towerControl.BulletSpawner.firingCoroutine == null)
         {
+            towerControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: Firing coroutine stopped");
         }
 
         else if (towerEnemyTargetting.InRangeEnemies.Count == 0)
         {
+            towerControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: In range enemies = " + towerEnemyTargetting.InRangeEnemies.Count);
         }
 
         else if (this.nearestEnemyControl == null)
         {
+            towerControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: Target enemy control = null");
         }

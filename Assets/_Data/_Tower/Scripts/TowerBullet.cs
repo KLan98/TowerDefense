@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class TowerBullet : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    private float bulletSpeed = 100f;
 
     // Update is called once per frame
     void Update()
     {
-        
+        transform.Translate(Vector3.forward * bulletSpeed * Time.deltaTime);
     }
 }

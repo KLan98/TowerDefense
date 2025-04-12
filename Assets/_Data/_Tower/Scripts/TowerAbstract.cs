@@ -25,7 +25,8 @@ public abstract class TowerAbstract : Load
     protected virtual void LoadTowerBullet()
     {
         if (this.towerBullet != null) return;
-        this.towerBullet = towerControl.GetComponentInChildren<TowerBullet>();    
+        // load grandchild component of a child, the child is disabled to hide the renderer
+        this.towerBullet = towerControl.GetComponentInChildren<TowerBullet>(true);
     }
 
     protected virtual void LoadTowerEnemyTargetting()

@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//protected TowerFirePoint towerFirePoint;
-//// clone the given prefab
-//public virtual TowerBullet Spawn(TowerBullet bulletPrefab)
-//{
-//    TowerBullet newObject = Instantiate(bulletPrefab);
-//    return newObject;   
-//}
-
 public class BulletSpawner : Load
 {
     [SerializeField] protected TowerControl towerControl;
