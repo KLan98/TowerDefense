@@ -66,19 +66,12 @@ public class TowerEnemyTargetting : Load
 
     protected virtual void RemoveEnemy(Collider collider)
     {
-        // if collider name is different from TowerTargetable do nothing
+        // if collider name is different from TowerTargetable do nothingT
         if (collider.name != Const.ENEMY_TARGETABLE) return;
 
         // if not then remove colliders parent EnemyControl to list
         this.inRangeEnemies.Remove(collider.transform.parent.GetComponent<EnemyControl>());
     }
-
-    //protected virtual void LoadEnemyManager()
-    //{
-    //    GameObject enemyManagerObject = GameObject.Find("EnemyManager");
-    //    if (this.enemyManager != null) return;
-    //    this.enemyManager = enemyManagerObject.GetComponent<EnemyManager>();
-    //}
 
     public virtual void FindNearestEnemy()
     {

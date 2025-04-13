@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SphereCollider))]
+[RequireComponent(typeof(CapsuleCollider))]
 public class EnemyTargetable : Load
 {
-    [SerializeField] protected SphereCollider sphereCollider;
+    [SerializeField] protected CapsuleCollider capsuleCollider;
 
     protected override void LoadComponent()
     {
@@ -14,9 +14,10 @@ public class EnemyTargetable : Load
 
     protected virtual void LoadSphereCollider()
     {
-        if (this.sphereCollider != null) return;
-        this.sphereCollider = GetComponent<SphereCollider>();
-        this.sphereCollider.radius = 2f;
-        this.sphereCollider.isTrigger = false;   
+        if (this.capsuleCollider != null) return;
+        this.capsuleCollider = GetComponent<CapsuleCollider>();
+        this.capsuleCollider.radius = 2f;
+        this.capsuleCollider.height = 9f;
+        this.capsuleCollider.isTrigger = false;   
     }
 }

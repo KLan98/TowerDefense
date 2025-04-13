@@ -8,8 +8,7 @@ public class TowerControl : Load
     [SerializeField] protected Transform model;
     [SerializeField] protected Transform rotator;
     public Transform Rotator => rotator;
-    [SerializeField] protected TowerBullet towerBullet;
-    public TowerBullet TowerBullet => towerBullet;
+
     [SerializeField] protected BulletSpawner bulletSpawner;
     public BulletSpawner BulletSpawner => bulletSpawner;
     [SerializeField] protected TowerFirePoint towerFirePoint;
@@ -20,7 +19,6 @@ public class TowerControl : Load
         this.LoadModel();
         this.LoadRotator();
         this.LoadBulletSpawner();
-        this.LoadTowerBullet();
         this.LoadTowerFirePoint();
     }
 
@@ -39,12 +37,6 @@ public class TowerControl : Load
     {
         if(this.bulletSpawner != null) return;
         this.bulletSpawner = GameObject.Find(Const.BULLET_SPAWNER).GetComponent<BulletSpawner>();   
-    }
-
-    protected virtual void LoadTowerBullet()
-    {
-        if (this.towerBullet != null) return;
-        this.towerBullet = gameObject.GetComponentInChildren<TowerBullet>();
     }
 
     protected virtual void LoadTowerFirePoint()

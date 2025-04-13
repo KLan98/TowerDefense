@@ -9,8 +9,8 @@ public class TowerShooting : TowerAbstract
 {
     // enemy control component of the target
     [SerializeField] protected EnemyControl nearestEnemyControl;
-    [SerializeField] public float rotationSpeed = 3f;
-    [SerializeField] public float fireRate = 0.3f;
+    [SerializeField] public float rotationSpeed = 6f;
+    [SerializeField] public float fireRate = 3f;
     [SerializeField] protected bool isFiring = false;
     [SerializeField] protected bool canFire = false;
 

@@ -29,12 +29,15 @@ public class BulletSpawner : Load
     {
         while (true)
         {
-            // Instantiate a bullet at the tower's fire point position and rotation.
-            Instantiate(
-                bulletPrefab,
-                towerControl.TowerFirePoint.transform.position,
-                towerControl.TowerFirePoint.transform.rotation
-            );
+            // Get bullet from pool
+            TowerBullet bullet = BulletPool.Instance.GetBullet();
+
+            // Set position and rotation
+            bullet.transform.position = towerControl.TowerFirePoint.transform.position;
+            bullet.transform.rotation = towerControl.TowerFirePoint.transform.rotation;
+
+            // Activate the bullet
+            bullet.gameObject.SetActive(true);
 
             // Wait before spawning the next bullet.
             // This controls the fire rate (e.g., 0.5s between shots).
