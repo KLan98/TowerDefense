@@ -3,6 +3,7 @@ public class Const
     public const string ENEMY_TARGETABLE = "EnemyTargetable";
     public const string PATH_MANAGER = "PathManager";
     public const string IS_MOVING = "isMoving";
+    public const string MAW_IS_MOVING = "mawIsMoving";
     public const string ENEMY_MANAGER = "EnemyManager";
     public const string MODEL = "Model";
     public const string TURRET_ROTATOR = "Rotator";
