@@ -10,11 +10,12 @@ public class BulletPool : Load
 
     // The bullet prefab that will be cloned to create more bullets.
     [SerializeField] private TowerBullet towerBullet;
+    public TowerBullet TowerBullet => towerBullet;
 
     // The number of bullets to preload into the pool at the start.
-    [SerializeField] private int initialPoolSize = 5;
+    [SerializeField] private int initialPoolSize = 100;
 
-    // The pool itself - a queue to store inactive bullets.
+    // The pool itself - a fifo queue to store inactive bullets.
     private Queue<TowerBullet> pool = new Queue<TowerBullet>();
 
     protected override void LoadComponent()
@@ -37,7 +38,7 @@ public class BulletPool : Load
         this.InitializePool();
     }
 
-    // This method creates the initial pool of inactive bullets.
+    // This method creates the initial pool fifo of inactive bullets.
     private void InitializePool()
     {
         for (int i = 0; i < initialPoolSize; i++)
@@ -56,14 +57,15 @@ public class BulletPool : Load
         }
     }
 
-    // Get a bullet from the pool to use for shooting.
+    // Get a bullet from the pool fifo to use for shooting.
     public TowerBullet GetBullet()
     {
-        // If the pool is empty, create a new bullet.
+        // If the pool is empty or exceed the max pool size, create a new bullet.
         if (pool.Count == 0)
         {
             TowerBullet bullet = Instantiate(towerBullet);
             bullet.gameObject.SetActive(false);
+            Debug.Log("Pool size exceeded");
             return bullet;
         }
 
@@ -84,7 +86,6 @@ public class BulletPool : Load
     protected virtual void LoadTowerBullet()
     {
         if (this.towerBullet != null) return;
-        // public T GetComponentInChildren(bool includeInactive = false); 
         // This line is trying to find a prefab or object in the scene by name, and then load a TowerBullet component from one of its child objects, even if that child is inactive (disabled).
         this.towerBullet = GameObject.Find(Const.BULLET_PREFAB).GetComponentInChildren<TowerBullet>(true);
     }

@@ -32,7 +32,7 @@ public class BulletSpawner : Load
             // Get bullet from pool
             TowerBullet bullet = BulletPool.Instance.GetBullet();
 
-            // Set position and rotation
+            // Set position and rotation to spawn
             bullet.transform.position = towerControl.TowerFirePoint.transform.position;
             bullet.transform.rotation = towerControl.TowerFirePoint.transform.rotation;
 
@@ -53,7 +53,7 @@ public class BulletSpawner : Load
         {
             // Start the bullet-spawning coroutine and save its reference
             firingCoroutine = StartCoroutine(SpawnBullets(bulletPrefab, interval));
-            //Debug.Log("Start Firing");
+            Debug.Log(this.towerControl.gameObject.name + " Start Firing");
         }
         // If it's already firing, do nothing — avoids starting multiple coroutines
     }
@@ -66,7 +66,7 @@ public class BulletSpawner : Load
         {
             StopCoroutine(firingCoroutine);   // Stop the coroutine
             firingCoroutine = null;          // Clear the reference
-            //Debug.Log("Stop Firing");
+            Debug.Log(this.towerControl.gameObject.name + " Stop Firing");
         }
     }
 }

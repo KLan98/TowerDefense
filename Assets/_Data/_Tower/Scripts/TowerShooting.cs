@@ -9,10 +9,12 @@ public class TowerShooting : TowerAbstract
 {
     // enemy control component of the target
     [SerializeField] protected EnemyControl nearestEnemyControl;
-    [SerializeField] public float rotationSpeed = 6f;
-    [SerializeField] public float fireRate = 3f;
+    [SerializeField] public float rotationSpeed = 40f;
+    [SerializeField] public float intervalBetweenShots = 0.15f;
     [SerializeField] protected bool isFiring = false;
     [SerializeField] protected bool canFire = false;
+    protected float aimDotThreshold = 0.83f;
+    [SerializeField] public float dot;
 
     void Update()
     {
@@ -26,7 +28,7 @@ public class TowerShooting : TowerAbstract
         if (towerEnemyTargetting.InRangeEnemies.Count == 0) return;
 
         // Calculate the relative distance from the turret to the target
-        Vector3 direction = nearestEnemyControl.GetComponentInChildren<EnemyAimingPoint>().transform.position - towerControl.Rotator.transform.position;
+        Vector3 direction = nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.position - towerControl.Rotator.transform.position;
 
         // We only want to rotate left/right, so we ignore the Y (vertical) difference.
         // This ensures the turret doesn't tilt up or down — only turns on the horizontal plane.
@@ -57,17 +59,17 @@ public class TowerShooting : TowerAbstract
         this.nearestEnemyControl = towerEnemyTargetting.NearestEnemy;
 
         // spawn bullets and fire
-        this.towerControl.BulletSpawner.StartFiring(towerBullet, fireRate);
+        this.towerControl.BulletSpawner.StartFiring(BulletPool.Instance.TowerBullet, intervalBetweenShots);
     }
 
     void OnDrawGizmos()
     {
-        if (nearestEnemyControl != null && towerControl?.Rotator != null)
+        if (nearestEnemyControl != null && towerControl.Rotator != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(
-                towerControl.Rotator.position,
-                nearestEnemyControl.GetComponentInChildren<EnemyAimingPoint>().transform.position
+                towerControl.TowerFirePoint.transform.position,
+                nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.position
             );
         }
     }
@@ -94,17 +96,35 @@ public class TowerShooting : TowerAbstract
             // Rotate the tower to face the current target
             LookAtTarget();
 
-            if (this.canFire == true)
+            // calculate absolute dot product of enemy targetable point z vector with tower fire point z vector
+            //dot = Mathf.Abs(Vector3.Dot(nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.forward, towerControl.TowerFirePoint.transform.forward));
+            dot = Vector3.Dot(nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.forward, towerControl.TowerFirePoint.transform.forward);
+
+            //Debug.Log("Dot product between " + nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().name + " and " + towerControl.TowerFirePoint.name + " = " + dot);
+
+            // only fire when enemy within a certain angle threshold before firing 
+            if (this.canFire == true && (dot > aimDotThreshold || dot <= -aimDotThreshold))
             {
                 FireAtTarget(); // Starts firing bullets (spawns coroutine)
                 this.isFiring = true; // Mark that we're now firing so we don't start again
             }
+            //if (this.canFire == true)
+            //{
+            //    FireAtTarget(); // Starts firing bullets (spawns coroutine)
+            //    this.isFiring = true; // Mark that we're now firing so we don't start again
+            //}
 
             else if (this.canFire == false)
             {
                 towerControl.BulletSpawner.StopFiring();
                 this.isFiring = false;
             }
+
+            //else if (dot <= aimDotThreshold)
+            //{
+            //    towerControl.BulletSpawner.StopFiring();
+            //    this.isFiring = false;
+            //}
         }
 
         else if (towerControl.BulletSpawner.firingCoroutine == null)

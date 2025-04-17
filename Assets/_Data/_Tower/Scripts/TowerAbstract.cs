@@ -6,13 +6,13 @@ using UnityEngine;
 public abstract class TowerAbstract : Load
 {
     [SerializeField] protected TowerControl towerControl;
-    [SerializeField] protected TowerBullet towerBullet;
+    //[SerializeField] protected TowerBullet towerBullet;
     [SerializeField] protected TowerEnemyTargetting towerEnemyTargetting;
 
     protected override void LoadComponent()
     {
         this.LoadTowerControl();
-        this.LoadTowerBullet();
+        //this.LoadTowerBullet();
         this.LoadTowerEnemyTargetting();
     }
 
@@ -22,12 +22,12 @@ public abstract class TowerAbstract : Load
         this.towerControl = transform.parent.GetComponent<TowerControl>();
     }
 
-    protected virtual void LoadTowerBullet()
-    {
-        if (this.towerBullet != null) return;
-        // load grandchild component of a child, the child is disabled to hide the renderer
-        this.towerBullet = towerControl.GetComponentInChildren<TowerBullet>(true);
-    }
+    //protected virtual void LoadTowerBullet()
+    //{
+    //    if (this.towerBullet != null) return;
+    //    // load grandchild component of a child, the child is disabled to hide the renderer
+    //    this.towerBullet = transform.parent.GetComponentInChildren<TowerBullet>(true);
+    //}
 
     protected virtual void LoadTowerEnemyTargetting()
     {

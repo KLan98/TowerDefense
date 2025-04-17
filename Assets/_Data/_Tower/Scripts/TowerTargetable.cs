@@ -18,6 +18,6 @@ public class EnemyTargetable : Load
         this.capsuleCollider = GetComponent<CapsuleCollider>();
         this.capsuleCollider.radius = 2f;
         this.capsuleCollider.height = 9f;
-        this.capsuleCollider.isTrigger = false;   
+        this.capsuleCollider.isTrigger = true;   
     }
 }

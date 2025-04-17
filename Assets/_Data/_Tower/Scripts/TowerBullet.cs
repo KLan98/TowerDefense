@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class TowerBullet : MonoBehaviour
 {
-    private float bulletSpeed = 3f;
-    [SerializeField] private float lifetime = 10f;
+    private float bulletSpeed = 65;
+    [SerializeField] private float lifetime = 5f;
 
     private void OnEnable()
     {
@@ -19,12 +19,20 @@ public class TowerBullet : MonoBehaviour
         transform.Translate(Vector3.forward * bulletSpeed * Time.deltaTime);
     }
 
+    // This method is called automatically by Unity when another collider enters this object's trigger collider.
     private void OnTriggerEnter(Collider other)
     {
-        // Example: handle collision with enemies here
-        // You could also apply damage here
+        // Check if the object that entered the trigger has the layer "Enemy"
+        // This ensures bullets only react to enemies, ignoring other objects like turrets or terrain.
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            // Log a message to the console for debugging purposes
+            Debug.Log("Enemy hit");
 
-        Debug.Log("Collider hit");
+            // Return this bullet to the object pool instead of destroying it
+            // This improves performance by reusing bullets instead of constantly instantiating/destroying them.
+            BulletPool.Instance.ReturnBullet(this);
+        }
     }
 
     private void Disable()
