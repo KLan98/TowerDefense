@@ -5,7 +5,6 @@ using UnityEngine;
 // unity automatically add these 2 components
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(SphereCollider))]
-
 public class TowerEnemyTargetting : Load
 {
     [SerializeField] protected Rigidbody rb;

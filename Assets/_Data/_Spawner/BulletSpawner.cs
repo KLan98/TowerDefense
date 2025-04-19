@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletSpawner : Load
 {
-    [SerializeField] protected TowerControl towerControl;
+    [SerializeField] protected MachineGunControl machineGunControl;
 
     // This variable will hold the reference to the currently running bullet-spawning coroutine.
     // It's how we check if bullets are already being spawned (to prevent duplicates),
@@ -14,14 +14,14 @@ public class BulletSpawner : Load
     // Unity calls this when the script is loaded.
     protected override void LoadComponent()
     {
-        this.LoadTowerControl();
+        this.LoadMachineGunControl();
     }
 
-    // Connects this spawner to the parent TowerControl if it's not already assigned.
-    protected virtual void LoadTowerControl()
+    // Connects this spawner to the parent MachineGunControl if it's not already assigned.
+    protected virtual void LoadMachineGunControl()
     {
-        if (this.towerControl != null) return;
-        this.towerControl = transform.parent.GetComponent<TowerControl>();
+        if (this.machineGunControl != null) return;
+        this.machineGunControl = transform.parent.GetComponent<MachineGunControl>();
     }
 
     // This coroutine continuously spawns bullets with a delay between each shot.
@@ -33,8 +33,8 @@ public class BulletSpawner : Load
             TowerBullet bullet = BulletPool.Instance.GetBullet();
 
             // Set position and rotation to spawn
-            bullet.transform.position = towerControl.TowerFirePoint.transform.position;
-            bullet.transform.rotation = towerControl.TowerFirePoint.transform.rotation;
+            bullet.transform.position = machineGunControl.TowerFirePoint.transform.position;
+            bullet.transform.rotation = machineGunControl.TowerFirePoint.transform.rotation;
 
             // Activate the bullet
             bullet.gameObject.SetActive(true);
@@ -53,7 +53,7 @@ public class BulletSpawner : Load
         {
             // Start the bullet-spawning coroutine and save its reference
             firingCoroutine = StartCoroutine(SpawnBullets(bulletPrefab, interval));
-            Debug.Log(this.towerControl.gameObject.name + " Start Firing");
+            //Debug.Log(this.machineGunControl.gameObject.name + " Start Firing");
         }
         // If it's already firing, do nothing — avoids starting multiple coroutines
     }
@@ -66,7 +66,7 @@ public class BulletSpawner : Load
         {
             StopCoroutine(firingCoroutine);   // Stop the coroutine
             firingCoroutine = null;          // Clear the reference
-            Debug.Log(this.towerControl.gameObject.name + " Stop Firing");
+            //Debug.Log(this.machineGunControl.gameObject.name + " Stop Firing");
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// for init path index and moving animation
 public class MutantMoving : EnemyMoving
 {
     protected override void ResetValue()

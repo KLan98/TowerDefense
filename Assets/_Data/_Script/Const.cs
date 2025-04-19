@@ -6,10 +6,15 @@ public class Const
     public const string MAW_IS_MOVING = "mawIsMoving";
     public const string ENEMY_MANAGER = "EnemyManager";
     public const string MODEL = "Model";
-    public const string TURRET_ROTATOR = "Rotator";
+    public const string TURRET_ROTATOR = "TurretRotator";
     public const string TURRET_MODEL = "TurretModel";
     public const string TURRET_PIVOT = "TurretPivot";
     public const string BULLET_SPAWNER = "BulletSpawner";
     public const string TURRET_BULLET = "TowerBullet";
     public const string BULLET_PREFAB = "Bullet";
+    public const string LAZER_MODEL = "LazerGunModel";
+    public const string LAZER_PREFAB = "Lazer";
+    public const string LAZER_SPAWNER = "LazerSpawner";
+    public const string LAZER_ROTATOR = "Rotator";
+    public const string ENEMY_DIE = "isDead";
 }

@@ -8,12 +8,13 @@ public class Load : MonoBehaviour
     protected virtual void Awake()
     {
         this.LoadComponent();
+        //Debug.Log("Play hit");
     }
 
     protected virtual void Reset()
     {
         this.LoadComponent();
-        this.ResetValue();  
+        //Debug.Log("Reset pressed");
     }
 
     protected virtual void LoadComponent()

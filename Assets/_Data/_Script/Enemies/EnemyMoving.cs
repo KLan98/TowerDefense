@@ -16,7 +16,7 @@ public class EnemyMoving : Load
     [SerializeField] protected float stopDistance = 2f; // when this distance reached find next point
     [SerializeField] protected bool isFinalPoint = false; // check if final point is reached
     [SerializeField] protected bool isMoving = false;
-    [SerializeField] protected bool canMove = true;
+    [SerializeField] public bool canMove = true;
 
     void Update()
     {
@@ -100,6 +100,13 @@ public class EnemyMoving : Load
             //Debug.Log("Final point" + " " + this.finalPoint.transform.name + " " + "not reached keep moving to" + " " + this.currentPoint.transform.name);
             this.isFinalPoint = false;
             this.canMove = true;
+        }
+
+        else if (this.pointDistance < this.stopDistance && this.currentPoint == this.finalPoint)
+        {
+            //Debug.Log("Final point" + " " + this.currentPoint.transform.name + " " + "reached");
+            this.isFinalPoint = true;
+            this.canMove = false;
         }
     }
 

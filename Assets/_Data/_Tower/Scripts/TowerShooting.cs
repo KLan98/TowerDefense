@@ -5,21 +5,38 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
-public class TowerShooting : TowerAbstract
+public class TowerShooting : Load
 {
     // enemy control component of the target
     [SerializeField] protected EnemyControl nearestEnemyControl;
     [SerializeField] public float rotationSpeed = 40f;
-    [SerializeField] public float intervalBetweenShots = 0.15f;
+    [SerializeField] protected float intervalBetweenShots = 0.15f;
     [SerializeField] protected bool isFiring = false;
     [SerializeField] protected bool canFire = false;
-    protected float aimDotThreshold = 0.83f;
-    [SerializeField] public float dot;
+    [SerializeField] protected MachineGunControl machineGunControl;
+    [SerializeField] protected TowerEnemyTargetting towerEnemyTargetting;
 
     void Update()
     {
         this.LoadNearestEnemyControl();
         this.CheckFiring();
+    }
+    protected override void LoadComponent()
+    {
+        this.LoadMachineGunControl();
+        this.LoadTowerEnemyTargetting();
+    }
+
+    protected virtual void LoadMachineGunControl()
+    {
+        if (this.machineGunControl != null) return;
+        this.machineGunControl = transform.parent.GetComponent<MachineGunControl>();
+    }
+
+    protected virtual void LoadTowerEnemyTargetting()
+    {
+        if (this.towerEnemyTargetting != null) return;
+        this.towerEnemyTargetting = machineGunControl.GetComponentInChildren<TowerEnemyTargetting>();
     }
 
     protected virtual void LookAtTarget()
@@ -28,7 +45,7 @@ public class TowerShooting : TowerAbstract
         if (towerEnemyTargetting.InRangeEnemies.Count == 0) return;
 
         // Calculate the relative distance from the turret to the target
-        Vector3 direction = nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.position - towerControl.Rotator.transform.position;
+        Vector3 direction = nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.position - machineGunControl.Rotator.transform.position;
 
         // We only want to rotate left/right, so we ignore the Y (vertical) difference.
         // This ensures the turret doesn't tilt up or down — only turns on the horizontal plane.
@@ -47,8 +64,8 @@ public class TowerShooting : TowerAbstract
         // This makes the movement gradual instead of snapping instantly.
         // lerp(A, B, alpha) = A + alpha * (B - A). 
         // Lerp(current rotation, angle between current rotation and object, time)
-        towerControl.Rotator.rotation = Quaternion.Lerp(
-        towerControl.Rotator.rotation,
+        machineGunControl.Rotator.rotation = Quaternion.Lerp(
+        machineGunControl.Rotator.rotation,
             targetRotation,
             Time.deltaTime * rotationSpeed
         );
@@ -59,16 +76,16 @@ public class TowerShooting : TowerAbstract
         this.nearestEnemyControl = towerEnemyTargetting.NearestEnemy;
 
         // spawn bullets and fire
-        this.towerControl.BulletSpawner.StartFiring(BulletPool.Instance.TowerBullet, intervalBetweenShots);
+        this.machineGunControl.BulletSpawner.StartFiring(BulletPool.Instance.TowerBullet, intervalBetweenShots);
     }
 
     void OnDrawGizmos()
     {
-        if (nearestEnemyControl != null && towerControl.Rotator != null)
+        if (nearestEnemyControl != null && machineGunControl.Rotator != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(
-                towerControl.TowerFirePoint.transform.position,
+                machineGunControl.TowerFirePoint.transform.position,
                 nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.position
             );
         }
@@ -94,56 +111,47 @@ public class TowerShooting : TowerAbstract
         if (towerEnemyTargetting.InRangeEnemies.Count > 0 && this.nearestEnemyControl != null)
         {
             // Rotate the tower to face the current target
-            LookAtTarget();
+            LookAtTarget();;
 
-            // calculate absolute dot product of enemy targetable point z vector with tower fire point z vector
-            //dot = Mathf.Abs(Vector3.Dot(nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.forward, towerControl.TowerFirePoint.transform.forward));
-            dot = Vector3.Dot(nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().transform.forward, towerControl.TowerFirePoint.transform.forward);
-
-            //Debug.Log("Dot product between " + nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().name + " and " + towerControl.TowerFirePoint.name + " = " + dot);
+            //Debug.Log("Dot product between " + nearestEnemyControl.GetComponentInChildren<EnemyTargetable>().name + " and " + machineGunControl.TowerFirePoint.name + " = " + dot);
 
             // only fire when enemy within a certain angle threshold before firing 
-            if (this.canFire == true && (dot > aimDotThreshold || dot <= -aimDotThreshold))
+            if (this.canFire == true)
             {
                 FireAtTarget(); // Starts firing bullets (spawns coroutine)
                 this.isFiring = true; // Mark that we're now firing so we don't start again
             }
-            //if (this.canFire == true)
-            //{
-            //    FireAtTarget(); // Starts firing bullets (spawns coroutine)
-            //    this.isFiring = true; // Mark that we're now firing so we don't start again
-            //}
 
             else if (this.canFire == false)
             {
-                towerControl.BulletSpawner.StopFiring();
+                machineGunControl.BulletSpawner.StopFiring();
                 this.isFiring = false;
             }
 
             //else if (dot <= aimDotThreshold)
             //{
-            //    towerControl.BulletSpawner.StopFiring();
+            //    machineGunControl.BulletSpawner.StopFiring();
             //    this.isFiring = false;
             //}
         }
 
-        else if (towerControl.BulletSpawner.firingCoroutine == null)
+        else if (machineGunControl.BulletSpawner.firingCoroutine == null)
         {
-            towerControl.BulletSpawner.StopFiring();
+            machineGunControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: Firing coroutine stopped");
         }
 
         else if (towerEnemyTargetting.InRangeEnemies.Count == 0)
         {
-            towerControl.BulletSpawner.StopFiring();
+            machineGunControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: In range enemies = " + towerEnemyTargetting.InRangeEnemies.Count);
         }
 
         else if (this.nearestEnemyControl == null)
         {
-            towerControl.BulletSpawner.StopFiring();
+            machineGunControl.BulletSpawner.StopFiring();
             this.isFiring = false;
             //Debug.Log("Set isFiring = false, reason: Target enemy control = null");
         }
