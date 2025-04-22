@@ -9,10 +9,10 @@ public class EnemyTargetable : Load
 
     protected override void LoadComponent()
     {
-        this.LoadSphereCollider();
+        this.LoadCapsuleCollider();
     }
 
-    protected virtual void LoadSphereCollider()
+    protected virtual void LoadCapsuleCollider()
     {
         if (this.capsuleCollider != null) return;
         this.capsuleCollider = GetComponent<CapsuleCollider>();

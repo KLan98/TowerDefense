@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TowerBullet : MonoBehaviour
+public class TowerBullet : Load
 {
     private float bulletSpeed = 65;
     [SerializeField] private float lifetime = 5f;
+    [SerializeField] protected int damage = 2;
 
     private void OnEnable()
     {
@@ -32,6 +33,10 @@ public class TowerBullet : MonoBehaviour
             // Return this bullet to the object pool instead of destroying it
             // This improves performance by reusing bullets instead of constantly instantiating/destroying them.
             BulletPool.Instance.ReturnBullet(this);
+
+            DamageReceiver damageReceiver = other.gameObject.transform.parent.GetComponentInChildren<DamageReceiver>();
+            if (damageReceiver == null) return;
+            this.DamageSend(damageReceiver);
         }
     }
 
@@ -39,5 +44,10 @@ public class TowerBullet : MonoBehaviour
     {
         CancelInvoke(); // Ensure no duplicate invoke on reuse
         BulletPool.Instance.ReturnBullet(this);
+    }
+
+    protected virtual void DamageSend(DamageReceiver damageReceiver)
+    {
+        damageReceiver.Deduct(this.damage);
     }
 }
