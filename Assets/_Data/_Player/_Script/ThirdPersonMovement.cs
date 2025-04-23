@@ -9,14 +9,16 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
     private InputAction move; // Reference to the "Move" input action , which is a 2D Vector 
 
     [SerializeField] protected Rigidbody rb; // Rigidbody for applying movement through physics
-
-    [SerializeField] private float movementForce = 10f; // Controls how fast the character moves
+    public Rigidbody Rb => rb;
+    [SerializeField] protected float movementForce = 10f; // Controls how fast the character moves
+    [SerializeField] protected float maxMovementForce = 20f; // Controls how fast the character moves
     [SerializeField] private float jumpForce = 7f;     // Controls how high the character jumps
     [SerializeField] private float maxSpeed = 5f;      // Maximum speed limit for character movement
     private Vector3 forceDirection = Vector3.zero;     // Direction in which movement force is applied
 
     [SerializeField] protected Camera playerCamera; // Reference to main camera for movement direction
 
+    private bool alreadySprint = false;
     private float groundCheckDistance = 0.3f;
 
     private void FixedUpdate()
@@ -154,14 +156,35 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         // Think of it like: “Hey Unity, when this event happens (player starts pressing the fire button), please ALSO run this method.”
         playerActionAsset.Player.Jump.started += DoJump; // Bind the jump logic to the jump input action
         playerActionAsset.Player.Sprint.started += DoSprint;
-        move = playerActionAsset.Player.Move; // assign move to be the Move action of player
-        playerActionAsset.Player.Enable(); // enable the player action asset
+        playerActionAsset.Player.Sprint.canceled += SprintStop;
+        playerActionAsset.Player.SprintWithLeftStick.started += DoSprintWithGamePad;
+    }
+
+    private void DoSprintWithGamePad(InputAction.CallbackContext context)
+    {
+        // Debug.Log("Sprint With gamepad called");
+        if (alreadySprint == false)
+        {
+            alreadySprint = true;
+            movementForce = maxMovementForce;
+        }
+
+        else if (alreadySprint == true)
+        {
+            movementForce = 10f;
+            alreadySprint = false;
+        }
+    }
+
+    private void SprintStop(InputAction.CallbackContext context)
+    {
+        movementForce = 10f;
     }
 
     private void DoSprint(InputAction.CallbackContext context)
     {
-        //Debug.Log("Sprint");
-
+        // Debug.Log("Sprint");
+        movementForce = maxMovementForce;
     }
 
     // Handles the actual jump logic when triggered
@@ -193,6 +216,8 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
     {
         playerActionAsset.Player.Jump.started -= DoJump; // Prevents memory leaks and event duplication
         playerActionAsset.Player.Sprint.started -= DoSprint;
+        playerActionAsset.Player.Sprint.canceled -= SprintStop;
         playerActionAsset.Player.Disable(); // disable the player action asset
+        playerActionAsset.Player.Jump.started -= DoSprintWithGamePad;
     }
 }
