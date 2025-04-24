@@ -28,7 +28,7 @@ public class LazerBeam : Load
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             // Log a message to the console for debugging purposes
-            Debug.Log(other.gameObject.transform.parent.name + " hit");
+            //Debug.Log(other.gameObject.transform.parent.name + " hit");
             DamageReceiver damageReceiver = other.gameObject.transform.parent.GetComponentInChildren<DamageReceiver>();
             if (damageReceiver == null) return;
             this.DamageSend(damageReceiver);

@@ -12,8 +12,8 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
     public Rigidbody Rb => rb;
     [SerializeField] protected float movementForce = 10f; // Controls how fast the character moves
     [SerializeField] protected float maxMovementForce = 20f; // Controls how fast the character moves
-    [SerializeField] private float jumpForce = 7f;     // Controls how high the character jumps
-    [SerializeField] private float maxSpeed = 5f;      // Maximum speed limit for character movement
+    [SerializeField] private float jumpForce = 6f;     // Controls how high the character jumps
+    [SerializeField] private float maxSpeed = 6f;      // Maximum speed limit for character movement
     private Vector3 forceDirection = Vector3.zero;     // Direction in which movement force is applied
 
     [SerializeField] protected Camera playerCamera; // Reference to main camera for movement direction
@@ -27,8 +27,10 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         AvoidSliding();
         LookAt();
         FallingWithGravity();   
+        AvoidRotateWhileJumping();
     }
 
+    // the straight movement direction should correspond to camera direction
     private void CameraRelativeMovement()
     {
         // Adds movement force in the right direction based on camera orientation and player input
@@ -96,7 +98,7 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         // if the velocity is < 0 meaning the object is falling downward
         if (rb.velocity.y < 0f)
         {
-            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime;
+            rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime * 2f;
         }
     }
 
@@ -155,8 +157,8 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         // started is a callback of InputAction
         // Think of it like: “Hey Unity, when this event happens (player starts pressing the fire button), please ALSO run this method.”
         playerActionAsset.Player.Jump.started += DoJump; // Bind the jump logic to the jump input action
-        playerActionAsset.Player.Sprint.started += DoSprint;
-        playerActionAsset.Player.Sprint.canceled += SprintStop;
+        playerActionAsset.Player.Sprint.started += DoSprint; // started when press sprint button
+        playerActionAsset.Player.Sprint.canceled += SprintStop; // stopped when release sprint button
         playerActionAsset.Player.SprintWithLeftStick.started += DoSprintWithGamePad;
     }
 
@@ -183,7 +185,7 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
 
     private void DoSprint(InputAction.CallbackContext context)
     {
-        // Debug.Log("Sprint");
+        Debug.Log("Sprint");
         movementForce = maxMovementForce;
     }
 
@@ -198,17 +200,21 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
     }
 
     // Check if character is standing on the ground using raycast
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         // create a new ray that cast from transform + 0.25f in down direction
         Ray ray = new Ray(transform.position + Vector3.up * 0.25f, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, groundCheckDistance))
         {
-            //Debug.Log(isGrounded);
+            //Debug.Log(isGrounded)
             return true;
         }
         //Debug.Log(isGrounded);
-        return false; // No ground detected below
+
+        else
+        {
+            return false; // No ground detected below
+        }
     }
 
     // Unsubscribe from input event when the object is disabled
@@ -219,5 +225,19 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         playerActionAsset.Player.Sprint.canceled -= SprintStop;
         playerActionAsset.Player.Disable(); // disable the player action asset
         playerActionAsset.Player.Jump.started -= DoSprintWithGamePad;
+    }
+
+    protected virtual void AvoidRotateWhileJumping()
+    {
+        if (!IsGrounded())
+        {
+            this.rb.constraints |= RigidbodyConstraints.FreezeRotation;
+            //movementForce = 1f;
+        }
+
+        else if (IsGrounded())
+        {
+            this.rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
+        }
     }
 }

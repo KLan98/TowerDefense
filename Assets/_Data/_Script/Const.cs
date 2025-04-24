@@ -18,4 +18,5 @@ public class Const
     public const string LAZER_ROTATOR = "Rotator";
     public const string ENEMY_DIE = "isDead";
     public const string PLAYER_MOVING_TRANSITIONS = "playerMovingTransitions";
+    public const string PLAYER_IS_GROUNDED = "playerIsGrounded";
 }

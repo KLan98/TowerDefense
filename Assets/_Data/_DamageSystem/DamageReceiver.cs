@@ -16,7 +16,7 @@ public class DamageReceiver : EnemyAbstract
     public virtual int Deduct(int hp)
     {
         this.currentHP = this.currentHP - hp;
-        Debug.Log(transform.parent.name + " " + this.currentHP);
+        //Debug.Log(transform.parent.name + " " + this.currentHP);
         if (this.currentHP <= 0)
         {
             this.IsDead();
@@ -26,7 +26,7 @@ public class DamageReceiver : EnemyAbstract
 
     private void IsDead()
     {
-        Debug.Log(gameObject.transform.parent.name + " is dead");
+        //Debug.Log(gameObject.transform.parent.name + " is dead");
         isDead = true;
         Die();
     }

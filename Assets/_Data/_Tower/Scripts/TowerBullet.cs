@@ -28,7 +28,7 @@ public class TowerBullet : Load
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemy"))
         {
             // Log a message to the console for debugging purposes
-            Debug.Log(other.gameObject.transform.parent.name + " hit");
+            //Debug.Log(other.gameObject.transform.parent.name + " hit");
 
             // Return this bullet to the object pool instead of destroying it
             // This improves performance by reusing bullets instead of constantly instantiating/destroying them.
