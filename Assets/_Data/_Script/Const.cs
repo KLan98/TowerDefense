@@ -19,4 +19,7 @@ public class Const
     public const string ENEMY_DIE = "isDead";
     public const string PLAYER_MOVING_TRANSITIONS = "playerMovingTransitions";
     public const string PLAYER_IS_GROUNDED = "playerIsGrounded";
+    public const string PLAYER_JUMP = "playerJump";
+    public const string PLAYER_LAND = "playerLand";
+    public const string PLAYER_MOVE = "playerMove";
 }

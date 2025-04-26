@@ -5,19 +5,20 @@ using UnityEngine.InputSystem; // Required for the new Input System
 
 public class ThirdPersonMovement : Load // Inherits from a custom class (likely for component loading)
 {
-    private PlayerInputActions playerActionAsset; // Stores input action map generated from Input System
-    private InputAction move; // Reference to the "Move" input action , which is a 2D Vector 
-
+    [Header("Components")]
     [SerializeField] protected Rigidbody rb; // Rigidbody for applying movement through physics
     public Rigidbody Rb => rb;
-    [SerializeField] protected float movementForce = 10f; // Controls how fast the character moves
-    [SerializeField] protected float maxMovementForce = 20f; // Controls how fast the character moves
-    [SerializeField] private float jumpForce = 6f;     // Controls how high the character jumps
-    [SerializeField] private float maxSpeed = 6f;      // Maximum speed limit for character movement
-    private Vector3 forceDirection = Vector3.zero;     // Direction in which movement force is applied
-
+    [SerializeField] protected Animator playerAnimator;
+    private PlayerInputActions playerActionAsset; // Stores input action map generated from Input System
+    private InputAction move; // Reference to the "Move" input action , which is a 2D Vector 
     [SerializeField] protected Camera playerCamera; // Reference to main camera for movement direction
 
+    [Header("Parameters")]
+    [SerializeField] protected float movementForce = 10f; // Controls how fast the character moves
+    [SerializeField] protected float maxMovementForce = 20f; // Controls how fast the character moves
+    //[SerializeField] private float jumpForce = 6f;     // Controls how high the character jumps
+    [SerializeField] private float maxSpeed = 6f;      // Maximum speed limit for character movement
+    private Vector3 forceDirection = Vector3.zero;     // Direction in which movement force is applied
     private bool alreadySprint = false;
     private float groundCheckDistance = 0.3f;
 
@@ -28,6 +29,7 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         LookAt();
         FallingWithGravity();   
         AvoidRotateWhileJumping();
+        LoadPlayerAnimator();
     }
 
     // the straight movement direction should correspond to camera direction
@@ -143,6 +145,11 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         playerActionAsset.Enable();                   // Enable the input actions so they start receiving input
     }
 
+    protected virtual void LoadPlayerAnimator()
+    {
+        playerAnimator = transform.GetComponentInChildren<Animator>();
+    }
+
     // Find the camera in the scene by name (assumes it's named "Main Camera")
     protected virtual void LoadMainCamera()
     {
@@ -195,7 +202,8 @@ public class ThirdPersonMovement : Load // Inherits from a custom class (likely 
         //Debug.Log("Jump");
         if (IsGrounded()) // Only allow jumping when on the ground
         {
-            forceDirection += Vector3.up * jumpForce; // Add upward force to simulate a jump
+            //forceDirection += Vector3.up * jumpForce; // Add upward force to simulate a jump
+            playerAnimator.SetTrigger("playerJump");
         }
     }
 

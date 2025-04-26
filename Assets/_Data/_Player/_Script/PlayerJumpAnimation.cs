@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class PlayerJumpAnimation : PlayerAbstract
 {
-    private void FixedUpdate()
-    {
-        PlayerJumpAnimationSet();
-    }
+    //private void FixedUpdate()
+    //{
+    //}
 
-    public void PlayerJumpAnimationSet()
-    {
-        this.playerAnimator.SetBool(Const.PLAYER_IS_GROUNDED, thirdPersonMovement.IsGrounded());
-    }
+    //public void PlayerJumpAnimationSet()
+    //{
+    //    playerAnimator.SetTrigger("playerJump");
+    //}
 
-    protected override void LoadPlayerAnimator()
-    {
-        playerAnimator = transform.parent.GetComponentInChildren<Animator>();
-    }
+    //protected override void LoadPlayerAnimator()
+    //{
+    //    playerAnimator = transform.parent.GetComponentInChildren<Animator>();
+    //}
 
-    protected override void LoadThirdPersonMovement()
-    {
-        thirdPersonMovement = transform.parent.GetComponent<ThirdPersonMovement>();
-    }
+    //protected override void LoadThirdPersonMovement()
+    //{
+    //    thirdPersonMovement = transform.parent.GetComponent<ThirdPersonMovement>();
+    //}
 }
