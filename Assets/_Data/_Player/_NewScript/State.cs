@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 // is where the actions declared
-public class State 
+public class State
 {
     public Player player;
     public StateMachine stateMachine;

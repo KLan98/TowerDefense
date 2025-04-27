@@ -6,6 +6,7 @@ public class LandingState : State
 {
     bool jump;
     bool landing;
+    bool sprintJump;
 
     public LandingState(Player player, StateMachine stateMachine) : base(player, stateMachine)
     {
@@ -67,6 +68,7 @@ public class LandingState : State
         {
             player.animator.ResetTrigger(Const.PLAYER_LAND);
             player.animator.SetTrigger(Const.PLAYER_MOVE);
+            player.animator.applyRootMotion = false;
             stateMachine.ChangeState(player.idle);
         }
     }
@@ -77,7 +79,7 @@ public class LandingState : State
         // if the velocity is < 0 meaning the object is falling downward
         if (player.rb.velocity.y < 0f)
         {
-            player.rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime * 2f;
+            player.rb.velocity -= Vector3.down * Physics.gravity.y * Time.fixedDeltaTime * 1.5f;
         }
     }
 }

@@ -22,4 +22,5 @@ public class Const
     public const string PLAYER_JUMP = "playerJump";
     public const string PLAYER_LAND = "playerLand";
     public const string PLAYER_MOVE = "playerMove";
+    public const string PLAYER_SPRINT_JUMP = "playerSprintJump";
 }

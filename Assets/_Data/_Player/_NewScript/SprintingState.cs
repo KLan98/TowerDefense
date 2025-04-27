@@ -6,6 +6,7 @@ using UnityEngine.TextCore.Text;
 public class SprintingState : State
 {
     bool sprint;
+    bool sprintJump;
 
     public SprintingState(Player player, StateMachine stateMachine) : base(player, stateMachine)
     {
@@ -34,11 +35,14 @@ public class SprintingState : State
             sprint = true;
         }
 
-        //if (jumpAction.triggered)
-        //{
-        //    sprintJump = true;
-
-        //}
+        if (jumpAction.WasPerformedThisFrame())
+        {
+            sprintJump = true;
+        }
+        else
+        {
+            sprintJump = false; 
+        }
     }
 
     public override void LogicUpdate()
@@ -47,9 +51,14 @@ public class SprintingState : State
         {
             player.animator.SetFloat(Const.PLAYER_MOVING_TRANSITIONS, player.rb.velocity.magnitude / player.maxSpeed + 1.5f);
         }
-        else
+        else 
         {
             stateMachine.ChangeState(player.idle);
+        }
+
+        if (sprintJump)
+        {
+            stateMachine.ChangeState(player.sprintjump);
         }
     }
 

@@ -15,6 +15,7 @@ public class JumpingState : State
     {
         base.Enter();
 
+        player.animator.applyRootMotion = true;
     }
 
     // do nothing while jumping
@@ -24,7 +25,7 @@ public class JumpingState : State
         // Debug.Log(sprint);
 
         // avoid double jump
-        if (jumpAction.WasPerformedThisFrame() && moveInput.sqrMagnitude < 0.1)
+        if (jumpAction.WasPerformedThisFrame())
         {
             return;
         }
@@ -72,7 +73,7 @@ public class JumpingState : State
 
     public override void PhysicsUpdate()
     {
-        player.rb.AddForce(Vector3.up * player.jumpForce, ForceMode.Impulse);
+        //player.rb.AddForce(Vector3.up * player.jumpForce, ForceMode.Impulse);
 
         // avoid rotating while airbourne
         if (!player.IsGrounded())

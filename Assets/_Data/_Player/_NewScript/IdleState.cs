@@ -40,6 +40,7 @@ public class IdleState : State
             jump = true;
             //Debug.Log("jump = true");
             player.jumpForce = player.allowedJumpForce;
+            //Debug.Log("jumpforce = max " + player.jumpForce);
         }
 
         else

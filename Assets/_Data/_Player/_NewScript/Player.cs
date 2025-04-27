@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+// https://pastebin.com/u/JojikYT/1/AvaSRgjp
 // player is where all control properties are defined and all components loaded
 // this is where the callbacks are subscribed
 // the loops are called
@@ -24,7 +24,7 @@ public class Player : Load
     //public CrouchingState crouching;
     public LandingState landing;
     public SprintingState sprinting;
-    //public SprintJumpState sprintjumping;
+    public SprintJumpState sprintjump;
     public PlayerInputActions playerActionAsset; // Stores input action map generated from Input System
 
     [Header("Components")]
@@ -48,6 +48,7 @@ public class Player : Load
         sprinting = new SprintingState(this, movementSM);
         jumping = new JumpingState(this, movementSM);
         landing = new LandingState(this, movementSM);
+        sprintjump = new SprintJumpState(this, movementSM);  
 
         // set starting state as idle
         movementSM.Initialize(idle);
@@ -64,6 +65,19 @@ public class Player : Load
     private void FixedUpdate()
     {
         movementSM.currentState.PhysicsUpdate();
+    }
+
+    void OnAnimatorMove()
+    {
+        //Debug.Log(animator.name);
+        if (animator && animator.applyRootMotion)
+        {
+            //Debug.Log("Root motion applied");
+            // Apply root motion to move the whole player GameObject
+            // Debug.Log(animator.deltaPosition);
+            transform.position += animator.deltaPosition;
+            transform.rotation *= animator.deltaRotation;
+        }
     }
 
     public Vector3 GetCameraForward(Camera playerCamera)
